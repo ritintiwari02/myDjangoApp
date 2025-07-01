@@ -39,14 +39,22 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:8080",
+        "http://localhost:5000",
+        "https://todosapp-w0aj.onrender.com"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-# middleware for appending request response time in request
-@app.middleware("http")
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With"
+    ],
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
