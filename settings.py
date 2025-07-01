@@ -7,3 +7,8 @@ class Settings(BaseSettings):
     SECRET_KEY = "KlgH6AzYDeZeGwD288to79I3vTHT8wp7"
     ALGORITHM = "HS256"
     isMongoTrue: bool = False
+    
+    # HSTS settings
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True

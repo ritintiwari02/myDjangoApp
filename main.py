@@ -23,6 +23,14 @@ app = FastAPI()
 
 app.mount('/static', StaticFiles(directory='static', html=True), name='static')
 
+# Add HSTS middleware
+class HSTSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        return response
+
+app.add_middleware(HSTSMiddleware)
 app.add_middleware(MyMiddleware, some_attribute="some_attribute_here_if_needed")
 # app.add_middleware(AdvancedMiddleware)
 
@@ -34,7 +42,6 @@ origins = [
 ]
 
 # app.add_middleware(HTTPSRedirectMiddleware)
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -55,6 +62,8 @@ app.add_middleware(
         "Origin",
         "X-Requested-With"
     ],
+)
+
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
@@ -90,43 +99,6 @@ async def app_shutdown():
 @app.get("/")
 async def root():
     return RedirectResponse(url="/auth/register")
-
-
-# depreciated : below @app.middleware("http")
-
-# @app.middleware("http")
-# async def add_process_time_header(request: Request, call_next):
-#     start_time = time.time()
-#     response = await call_next(request)
-#     process_time = time.time() - start_time
-#     response.headers["X-Process-Time"] = str(process_time)
-#     return response
-
-
-# @app.middleware("http")
-# async def check_jwt(request: Request, call_next):
-#     header = request.headers.get('Authorization')
-#     if header is None:
-#         return {"msg": "access token expired , cannot request for refresh token"}
-#     bearer, token = header.split()
-#
-#
-#     try:
-#         if token is None:
-#             return {"msg": "access token expired , cannot request for refresh token"}
-#         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-#         username: str = payload.get("sub")
-#         user_id: int = payload.get("id")
-#         if username is None or user_id is None:
-#             return {"msg": "access token expired , cannot request for refresh token"}
-#     except ExpiredSignatureError:
-#         return {"msg": "access token expired , cannot request for refresh token"}
-#         #raise HTTPException(status_code=404, detail="token expired , refresh token cannot be requested , time exceeded")
-#     except JWTError:
-#         return {"msg": "access token expired , cannot request for refresh token"}
-#
-#     response = await call_next(request)
-#     return response
 
 
 if __name__ == "__main__":
