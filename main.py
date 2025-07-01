@@ -16,18 +16,20 @@ from database import engine, check_db_connected, check_db_disconnected
 from routers import auth, todos, users
 from starlette.staticfiles import StaticFiles
 
-from settings import Settings
-from jose import jwt, JWTError, ExpiredSignatureError
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:5000",
+    "https://todosapp-w0aj.onrender.com",
+]
 
-app = FastAPI()
-
-app.mount('/static', StaticFiles(directory='static', html=True), name='static')
-
-app.add_middleware(MyMiddleware, some_attribute="some_attribute_here_if_needed")
-# app.add_middleware(AdvancedMiddleware)
-
-settings = Settings()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+)
 origins = [
     "http://localhost",
     "http://localhost:8080",
