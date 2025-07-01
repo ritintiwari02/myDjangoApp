@@ -143,4 +143,4 @@ To deploy this project run
 
 ## Authors
 
-- [@praveenRI007](https://www.github.com/praveenRI007)
+- [@ritintiwari02](https://www.github.com/ritintiwari02)
