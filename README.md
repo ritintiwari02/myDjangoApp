@@ -1,4 +1,4 @@
-# Fast API : To Do App
+# Fast API : To Do App by Ritin Tiwari
 
 
 This project is developed as part of learning from Fast API udemy course from Eric Roby.
